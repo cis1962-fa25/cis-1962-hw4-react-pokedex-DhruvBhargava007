@@ -31,28 +31,26 @@ export function BoxList({ pokemonMap, refreshTrigger }: BoxListProps) {
           const entry = await pokemonAPI.getBoxEntry(id);
           let pokemonName = pokemonMap.get(entry.pokemonId);
 
-          // If Pokemon name not in map, fetch it by searching through Pokemon list
+          // If Pokemon name not in map, calculate the exact batch to fetch
+          // Since Pokemon IDs are sequential, we can directly calculate which batch contains the ID
           if (!pokemonName) {
-            // Try to find the Pokemon by fetching batches
             const batchSize = 100;
             const maxId = pokemonAPI.getMaxPokemonId();
-            let found = false;
-
-            for (
-              let offset = 0;
-              offset < maxId && !found;
-              offset += batchSize
-            ) {
+            
+            // Calculate the offset for the batch that contains this Pokemon ID
+            // Pokemon IDs are 1-indexed, so ID 150 would be in batch starting at offset 100
+            const calculatedOffset = Math.floor((entry.pokemonId - 1) / batchSize) * batchSize;
+            
+            if (calculatedOffset < maxId) {
               const pokemonList = await pokemonAPI.listPokemon(
                 batchSize,
-                offset,
+                calculatedOffset,
               );
               const foundPokemon = pokemonList.find(
                 (p) => p.id === entry.pokemonId,
               );
               if (foundPokemon) {
                 pokemonName = foundPokemon.name;
-                found = true;
                 // Update the map for future use
                 pokemonMap.set(entry.pokemonId, pokemonName);
               }
