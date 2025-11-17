@@ -41,6 +41,7 @@ body {
   display: flex;
   gap: 1rem;
   justify-content: center;
+  visibility: visible;
 }
 
 .view-switcher button {
@@ -53,6 +54,9 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  visibility: visible;
+  display: inline-block;
+  opacity: 1;
 }
 
 .view-switcher button:hover {
@@ -395,31 +399,45 @@ body {
 }
 
 .sprite-selector {
-  display: flex;
+  display: flex !important;
   gap: 0.5rem;
   margin-top: 1rem;
   flex-wrap: wrap;
   justify-content: center;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .sprite-selector button {
   padding: 0.5rem 1rem;
-  border: 2px solid #ddd;
+  border: 2px solid #667eea;
   background: white;
+  color: #667eea;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
+  font-weight: 600;
   transition: all 0.3s ease;
+  visibility: visible !important;
+  display: inline-block !important;
+  opacity: 1 !important;
+  min-width: 100px;
+  white-space: nowrap;
 }
 
 .sprite-selector button:hover {
   border-color: #667eea;
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .sprite-selector button.active {
   background: #667eea;
   color: white;
   border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
 }
 
 .pokemon-description {
