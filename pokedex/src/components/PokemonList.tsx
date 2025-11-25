@@ -24,13 +24,20 @@ export function PokemonList({ onPokemonAdded }: PokemonListProps) {
 
   useEffect(() => {
     const fetchPokemon = async () => {
+      const offset = currentPage * pageSize;
+      console.log(
+        `[PokemonList] Loading page ${currentPage + 1} (offset: ${offset}, limit: ${pageSize})`,
+      );
       setLoading(true);
       setError(null);
       try {
-        const offset = currentPage * pageSize;
         const data = await pokemonAPI.listPokemon(pageSize, offset);
+        console.log(
+          `[PokemonList] Successfully loaded ${data.length} Pokemon for page ${currentPage + 1}`,
+        );
         setPokemon(data);
       } catch (error) {
+        console.error('[PokemonList] Error loading Pokemon:', error);
         setError(
           error instanceof Error
             ? error.message
@@ -38,6 +45,7 @@ export function PokemonList({ onPokemonAdded }: PokemonListProps) {
         );
       } finally {
         setLoading(false);
+        console.log(`[PokemonList] Finished loading page ${currentPage + 1}`);
       }
     };
 
@@ -45,10 +53,18 @@ export function PokemonList({ onPokemonAdded }: PokemonListProps) {
   }, [currentPage]);
 
   const handlePokemonClick = async (pokemonName: string) => {
+    console.log(`[PokemonList] User clicked on Pokemon: ${pokemonName}`);
     try {
       const details = await pokemonAPI.getPokemonByName(pokemonName);
+      console.log(
+        `[PokemonList] Successfully loaded details for ${pokemonName}`,
+      );
       setSelectedPokemon(details);
     } catch (error) {
+      console.error(
+        `[PokemonList] Error loading details for ${pokemonName}:`,
+        error,
+      );
       setError(
         error instanceof Error
           ? error.message

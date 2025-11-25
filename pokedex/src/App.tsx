@@ -17,23 +17,42 @@ function App() {
   // Build Pokemon ID to name mapping on app load (non-blocking)
   useEffect(() => {
     const buildPokemonMap = async () => {
+      console.log('[App] Starting to build Pokemon ID to name mapping...');
       try {
         const map = new Map<number, string>();
         const maxId = pokemonAPI.getMaxPokemonId();
-        const batchSize = 100;
+        const batchSize = 10;
+        const totalBatches = Math.ceil(maxId / batchSize);
+
+        console.log(
+          `[App] Will fetch ${totalBatches} batches of ${batchSize} Pokemon each (max ID: ${maxId})`,
+        );
 
         // Fetch all Pokemon in batches to build the map
-        for (let offset = 0; offset < maxId; offset += batchSize) {
+        for (
+          let batch = 0, offset = 0;
+          offset < maxId;
+          batch++, offset += batchSize
+        ) {
+          console.log(
+            `[App] Fetching batch ${batch + 1}/${totalBatches} (offset: ${offset})`,
+          );
           const pokemon = await pokemonAPI.listPokemon(batchSize, offset);
           pokemon.forEach((p: Pokemon) => {
             map.set(p.id, p.name);
           });
+          console.log(
+            `[App] Batch ${batch + 1} complete. Map now contains ${map.size} entries.`,
+          );
         }
 
+        console.log(
+          `[App] Pokemon map building complete! Total entries: ${map.size}`,
+        );
         setPokemonMap(map);
       } catch (error) {
         // Don't block the app if map building fails
-        console.error('Failed to build Pokemon map:', error);
+        console.error('[App] Failed to build Pokemon map:', error);
         // Set a minimal map or empty map - Box features will work with lazy loading
       }
     };
